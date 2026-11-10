@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HospitalJSF - Historial Clínico</title>
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+    <style>
+        /* Formato Historia Clínica Oficial */
+        .historia-clinica-doc {
+            background: #FFFFFF;
+            border: 2px solid #93C5FD;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(19, 102, 255, 0.08);
+            margin-bottom: 24px;
+        }
+        .hc-header {
+            background: linear-gradient(135deg, #1366FF 0%, #2563EB 100%);
+            color: #FFFFFF;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hc-title-main {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+        }
+        .hc-subtitle {
+            font-size: 11px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+        .hc-header-meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .hc-meta-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            opacity: 0.85;
+            margin-right: 6px;
+        }
+        .hc-meta-val {
+            font-size: 13px;
+            font-weight: 800;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 10px;
+            border-radius: 6px;
+        }
+        .hc-section-title {
+            background: #DBEAFE;
+            color: #1E40AF;
+            font-size: 11.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 9px 18px;
+            border-top: 1px solid #BFDBFE;
+            border-bottom: 1px solid #BFDBFE;
+        }
+        .hc-table-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: #FFFFFF;
+        }
+        .hc-cell {
+            padding: 9px 14px;
+            border: 1px solid #E2E8F0;
+            font-size: 12px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+        }
+        .hc-cell-header {
+            background: #F8FAFC;
+            font-weight: 800;
+            font-size: 10.5px;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="app-container">
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19 10.5V6c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v4.5C5 13 6.9 15.2 9.4 15.5c.6 1.8 2.2 3.2 4.1 3.4v2.1c0 .55.45 1 1 1s1-.45 1-1v-2.1c1.9-.3 3.5-1.6 4.1-3.4 2.5-.3 4.4-2.5 4.4-5zm-5 6.5c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
+                    </div>
+                    <div class="brand-name">Hospital<span>JSF</span></div>
+                </div>
+
+                <ul class="menu-list">
+                    <li>
+                        <h:link outcome="index" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0-18v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>
+                            Dashboard
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="paciente" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            Pacientes
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="triaje" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                            Triaje Clínico
+                        </h:link>
+                    </li>
+                    <h:panelGroup rendered="#{loginBean.admin}">
+                        <li>
+                            <h:link outcome="doctor" styleClass="nav-link">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                                Doctores
+                            </h:link>
+                        </li>
+                    </h:panelGroup>
+                    <li>
+                        <h:link outcome="consulta" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                            Consultas
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="historial" styleClass="nav-link active">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            Historial Médico
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="calendario" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+                            Calendario de Citas
+                        </h:link>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-bottom">
+                <h:form>
+                    <h:commandLink action="#{loginBean.cerrarSesion}" styleClass="nav-link">
+                        <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                        Cerrar Sesión
+                    </h:commandLink>
+                </h:form>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-wrapper">
+            <!-- BANNER DEL SISTEMA -->
+            <div class="inst-banner">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span class="inst-badge">MINISTERIO DE SALUD</span>
+                        <span class="inst-badge-white">EXPEDIENTE CLÍNICO INTEGRADO</span>
+                    </div>
+                    <div class="inst-banner-title">
+                        Historia Clínica Única y Registro Evolutivo
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500;">
+                        Auditoría Asistencial • Antecedentes, Factores de Riesgo y Consultas Médicas
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">RED ASISTENCIAL CENTRAL</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #1366FF; margin-top: 2px;">CÓDIGO IPRESS: 0001428</div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Selector de Paciente -->
+                <div class="form-card" style="border: 1px solid #BFDBFE;">
+                    <div class="card-header" style="margin-bottom: 20px; border-bottom: 2px solid #EBF3FC; padding-bottom: 12px;">
+                        <div>
+                            <span class="card-title">Seleccionar Paciente para Consulta de Expediente Clínico</span>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                Búsqueda centralizada de expedientes e historias ambulatorias
+                            </div>
+                        </div>
+                    </div>
+
+                    <h:form id="formSelectorHistorial">
+                        <div style="display: flex; gap: 16px; align-items: flex-end;">
+                            <div class="form-group" style="flex: 1;">
+                                <h:outputLabel value="Paciente Registrado:" for="cmbPaciente" />
+                                <h:selectOneMenu id="cmbPaciente" value="#{historialMedicoBean.idPacienteSeleccionado}" styleClass="form-select">
+                                    <f:selectItem itemLabel="-- Seleccione un Paciente --" itemValue="0" />
+                                    <f:selectItems value="#{historialMedicoBean.listaPacientes}" var="pac"
+                                                   itemLabel="#{pac.nombre} (DNI: #{pac.dni})" itemValue="#{pac.idPaciente}" />
+                                </h:selectOneMenu>
+                            </div>
+
+                            <h:commandButton value="Consultar Historial"
+                                             action="#{historialMedicoBean.cargarHistorial}"
+                                             styleClass="btn-primary-action"/>
+
+                            <h:commandButton value="Descargar Historial PDF"
+                                             action="#{historialMedicoBean.exportarHistorialPDF}"
+                                             style="background: #DC2626; color: white; border: none; padding: 12px 24px; border-radius: 30px; font-weight: 700; cursor: pointer;"/>
+                        </div>
+
+                        <h:messages styleClass="messages-box" showDetail="true" showSummary="true" />
+                    </h:form>
+                </div>
+
+                <!-- FORMATO OFICIAL DE HISTORIA CLÍNICA (ESTILO FICHA CLÍNICA ADAPTADA) -->
+                <h:panelGroup rendered="#{historialMedicoBean.pacienteSeleccionado != null}">
+                    <div class="historia-clinica-doc">
+                        <!-- ENCABEZADO DEL DOCUMENTO CLÍNICO -->
+                        <div class="hc-header">
+                            <div>
+                                <div class="hc-title-main">REGISTRO DE HISTORIA CLÍNICA GENERAL</div>
+                                <div class="hc-subtitle">HOSPITAL NACIONAL JSF • SISTEMA DE GESTIÓN HOSPITALARIA INTEGRADA</div>
+                            </div>
+                            <div class="hc-header-meta">
+                                <div>
+                                    <span class="hc-meta-label">Nº DE HISTORIA CLÍNICA:</span>
+                                    <span class="hc-meta-val">HC-2026-000#{historialMedicoBean.pacienteSeleccionado.idPaciente}</span>
+                                </div>
+                                <div style="margin-top: 4px;">
+                                    <span class="hc-meta-label">CENTRO ASISTENCIAL:</span>
+                                    <span class="hc-meta-val">SEDE CENTRAL HOSPITALARIA</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 1. REGISTRO DE ADMISIÓN Y TRIAJE -->
+                        <div class="hc-section-title">1.- REGISTRO DE ADMISIÓN Y TRIAJE</div>
+                        <div class="hc-table-grid">
+                            <div class="hc-cell hc-cell-header">FECHA DE EMISIÓN</div>
+                            <div class="hc-cell hc-cell-header">CENTRO ASISTENCIAL</div>
+                            <div class="hc-cell hc-cell-header">CONDICIÓN DE INGRESO</div>
+                            <div class="hc-cell hc-cell-header">GÉNERO / SEXO</div>
+
+                            <div class="hc-cell">
+                                <h:outputText value="#{historialMedicoBean.historialConsultas != null and not empty historialMedicoBean.historialConsultas ? historialMedicoBean.historialConsultas[0].fecha : '01/11/2026'}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                </h:outputText>
+                            </div>
+                            <div class="hc-cell">Hospital Nacional JSF</div>
+                            <div class="hc-cell">Consulta Ambulatoria</div>
+                            <div class="hc-cell"><strong>#{historialMedicoBean.pacienteSeleccionado.sexo}</strong></div>
+
+                            <div class="hc-cell hc-cell-header">TALLA (m)</div>
+                            <div class="hc-cell hc-cell-header">PESO ESTIMADO</div>
+                            <div class="hc-cell hc-cell-header">PRESIÓN ARTERIAL</div>
+                            <div class="hc-cell hc-cell-header">TEMPERATURA</div>
+
+                            <div class="hc-cell">#{historialMedicoBean.pacienteSeleccionado.talla != null ? historialMedicoBean.pacienteSeleccionado.talla : '1.70 m'}</div>
+                            <div class="hc-cell">#{historialMedicoBean.pacienteSeleccionado.peso != null ? historialMedicoBean.pacienteSeleccionado.peso : '68.5 kg'}</div>
+                            <div class="hc-cell"><strong>#{historialMedicoBean.pacienteSeleccionado.presion != null ? historialMedicoBean.pacienteSeleccionado.presion : '120/80 mmHg'}</strong></div>
+                            <div class="hc-cell">#{historialMedicoBean.pacienteSeleccionado.temperatura != null ? historialMedicoBean.pacienteSeleccionado.temperatura : '36.5 °C'}</div>
+
+                            <div class="hc-cell hc-cell-header" style="grid-column: span 2;">DOCUMENTO DE IDENTIDAD</div>
+                            <div class="hc-cell hc-cell-header" style="grid-column: span 2;">CONSENTIMIENTO INFORMADO</div>
+
+                            <div class="hc-cell" style="grid-column: span 2;"><strong>DNI: #{historialMedicoBean.pacienteSeleccionado.dni}</strong></div>
+                            <div class="hc-cell" style="grid-column: span 2; color: #16A34A; font-weight: 700;">✓ Firmado y Autorizado en Expediente</div>
+                        </div>
+
+                        <!-- 2. DATOS DE IDENTIFICACIÓN -->
+                        <div class="hc-section-title">2.- DATOS DE IDENTIFICACIÓN DEL PACIENTE</div>
+                        <div class="hc-table-grid">
+                            <div class="hc-cell hc-cell-header" style="grid-column: span 2;">APELLIDOS Y NOMBRES</div>
+                            <div class="hc-cell hc-cell-header">EDAD</div>
+                            <div class="hc-cell hc-cell-header">ESTADO EXPEDIENTE</div>
+
+                            <div class="hc-cell" style="grid-column: span 2; font-size: 14px; font-weight: 800; color: #0F172A;">
+                                #{historialMedicoBean.pacienteSeleccionado.nombre}
+                            </div>
+                            <div class="hc-cell">#{historialMedicoBean.pacienteSeleccionado.edad} Años</div>
+                            <div class="hc-cell"><span class="badge-status badge-success">Activo / Vigente</span></div>
+
+                            <div class="hc-cell hc-cell-header" style="grid-column: span 2;">DIRECCIÓN DE RESIDENCIA HABITUAL</div>
+                            <div class="hc-cell hc-cell-header">NACIONALIDAD</div>
+                            <div class="hc-cell hc-cell-header">Nº DE TELÉFONO</div>
+
+                            <div class="hc-cell" style="grid-column: span 2;">#{historialMedicoBean.pacienteSeleccionado.direccion != null ? historialMedicoBean.pacienteSeleccionado.direccion : 'Av. Principal 123 - Lima, Perú'}</div>
+                            <div class="hc-cell">Peruana</div>
+                            <div class="hc-cell">#{historialMedicoBean.pacienteSeleccionado.telefono}</div>
+                        </div>
+
+                        <!-- 3. HÁBITOS DE SALUD Y FACTORES DE RIESGO -->
+                        <div class="hc-section-title">3.- HÁBITOS DE SALUD Y FACTORES DE RIESGO</div>
+                        <div class="hc-table-grid">
+                            <div class="hc-cell hc-cell-header">FUMADOR</div>
+                            <div class="hc-cell hc-cell-header">CONSUMO DE ALCOHOL</div>
+                            <div class="hc-cell hc-cell-header">ACTIVIDAD FÍSICA</div>
+                            <div class="hc-cell hc-cell-header">ALERGIAS DECLARADAS</div>
+
+                            <div class="hc-cell">No Fumador</div>
+                            <div class="hc-cell">Ocasional / Social</div>
+                            <div class="hc-cell">Moderada (3 veces/semana)</div>
+                            <div class="hc-cell" style="color: #0284C7; font-weight: 700;">#{historialMedicoBean.pacienteSeleccionado.alergias != null ? historialMedicoBean.pacienteSeleccionado.alergias : 'Ninguna declarada'}</div>
+                        </div>
+
+                        <!-- 4. ANTECEDENTES PERSONALES Y FAMILIARES RELEVANTES -->
+                        <div class="hc-section-title">4.- ANTECEDENTES PERSONALES Y FAMILIARES RELEVANTES</div>
+                        <div class="hc-table-grid">
+                            <div class="hc-cell hc-cell-header">ANTECEDENTES CLÍNICOS</div>
+                            <div class="hc-cell hc-cell-header">ANTECEDENTES QUIRÚRGICOS</div>
+                            <div class="hc-cell hc-cell-header">FARMACOLÓGICOS</div>
+                            <div class="hc-cell hc-cell-header">FAMILIARES RELEVANTES</div>
+
+                            <div class="hc-cell">Sin patología crónica descompensada</div>
+                            <div class="hc-cell">Sin cirugías recientes</div>
+                            <div class="hc-cell">Medicaciones indicadas en consulta</div>
+                            <div class="hc-cell">Hipertensión arterial en línea directa</div>
+                        </div>
+
+                        <!-- 5. REGISTRO CRONOLÓGICO DE CONSULTAS Y EVOLUCIÓN CLÍNICA -->
+                        <div class="hc-section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>5.- REGISTRO CRONOLÓGICO DE CONSULTAS, DIAGNÓSTICOS Y TRATAMIENTOS</span>
+                            <span style="font-size: 11px; font-weight: 800; background: #BFDBFE; color: #1E3A8A; padding: 2px 8px; border-radius: 4px;">
+                                Total de Atenciones: #{historialMedicoBean.historialConsultas != null ? historialMedicoBean.historialConsultas.size() : 0}
+                            </span>
+                        </div>
+
+                        <div class="table-responsive" style="margin: 0;">
+                            <h:dataTable value="#{historialMedicoBean.historialConsultas}" var="c" styleClass="custom-table" style="margin: 0; border: none;">
+                                <h:column>
+                                    <f:facet name="header">Fecha / Hora</f:facet>
+                                    <div style="font-weight: 700; color: #0F172A;">
+                                        <h:outputText value="#{c.fecha}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">#{c.hora}</div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Médico Tratante</f:facet>
+                                    <strong>#{c.nombreDoctor != null ? c.nombreDoctor : 'Dr. Asignado'}</strong>
+                                    <div style="font-size: 11px; color: var(--primary);">#{c.especialidadDoctor}</div>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Diagnóstico Médico</f:facet>
+                                    <strong>#{c.diagnostico}</strong>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Tratamiento / Receta</f:facet>
+                                    #{c.tratamiento}
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Análisis Clínicos</f:facet>
+                                    <span class="badge-status badge-info">#{c.analisis}</span>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Estado</f:facet>
+                                    <span class="badge-status #{c.estado == 'Atendida' ? 'badge-success' : 'badge-info'}">
+                                        #{c.estado}
+                                    </span>
+                                </h:column>
+                            </h:dataTable>
+                        </div>
+                    </div>
+                </h:panelGroup>
+            </div>
+        </main>
+    </div>
+</h:body>
+</html>

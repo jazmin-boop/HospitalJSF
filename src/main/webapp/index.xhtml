@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HospitalJSF - Dashboard Hospitalario</title>
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+    <style>
+        .flow-arrow-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #EBF2FF;
+            border: 2px solid #BFDBFE;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(19, 102, 255, 0.15);
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="app-container">
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19 10.5V6c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v4.5C5 13 6.9 15.2 9.4 15.5c.6 1.8 2.2 3.2 4.1 3.4v2.1c0 .55.45 1 1 1s1-.45 1-1v-2.1c1.9-.3 3.5-1.6 4.1-3.4 2.5-.3 4.4-2.5 4.4-5zm-5 6.5c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
+                    </div>
+                    <div class="brand-name">Hospital<span>JSF</span></div>
+                </div>
+
+                <ul class="menu-list">
+                    <li>
+                        <h:link outcome="index" styleClass="nav-link active">
+                            <svg viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0-18v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>
+                            Dashboard
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="paciente" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            Pacientes
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="triaje" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                            Triaje Clínico
+                        </h:link>
+                    </li>
+                    <!-- Módulo Doctores visible ÚNICAMENTE para Administradores -->
+                    <h:panelGroup rendered="#{loginBean.admin}">
+                        <li>
+                            <h:link outcome="doctor" styleClass="nav-link">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                                Doctores
+                            </h:link>
+                        </li>
+                    </h:panelGroup>
+                    <li>
+                        <h:link outcome="consulta" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                            Consultas
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="historial" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            Historial Médico
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="calendario" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+                            Calendario de Citas
+                        </h:link>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-bottom">
+                <h:form>
+                    <h:commandLink action="#{loginBean.cerrarSesion}" styleClass="nav-link">
+                        <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                        Cerrar Sesión
+                    </h:commandLink>
+                </h:form>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-wrapper">
+            <!-- BANNER DEL SISTEMA -->
+            <div class="inst-banner">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span class="inst-badge">MINISTERIO DE SALUD</span>
+                        <span class="inst-badge-white">CENTRO DE CONTROL HOSPITALARIO</span>
+                    </div>
+                    <div class="inst-banner-title">
+                        Sistema Integrado de Gestión y Atención Hospitalaria
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500;">
+                        Tablero Ejecutivo • Indicadores Asistenciales, Padrón de Pacientes y Cuadro de Mando
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">RED ASISTENCIAL CENTRAL</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #1366FF; margin-top: 2px;">CÓDIGO IPRESS: 0001428</div>
+                </div>
+            </div>
+
+            <!-- Topbar Header -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <div class="greeting">
+                        ¡Bienvenido de nuevo, #{loginBean.usuarioLogueado != null ? loginBean.usuarioLogueado.nombre : 'Dr. Carlos'}!
+                    </div>
+                    <h1 class="page-title">Dashboard General y Flujo de Atención</h1>
+                </div>
+
+                <div class="topbar-right">
+                    <h:form style="display: flex; gap: 8px;">
+                        <h:commandButton value="Descargar Reporte PDF" action="#{pacienteBean.exportarPDF}"
+                                         immediate="true"
+                                         style="background: #DC2626; color: white; border: none; padding: 9px 18px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer;"/>
+                    </h:form>
+
+                    <div class="user-profile">
+                        <div class="user-avatar">
+                            #{loginBean.usuarioLogueado != null ? loginBean.usuarioLogueado.nombre.substring(0,2).toUpperCase() : 'CP'}
+                        </div>
+                        <div class="user-info">
+                            <div class="name">#{loginBean.usuarioLogueado != null ? loginBean.usuarioLogueado.nombre : 'Dr. Carlos Pérez'}</div>
+                            <div class="role">#{loginBean.usuarioLogueado != null ? loginBean.usuarioLogueado.rol : 'ADMIN'}</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Grid Recreated from Template -->
+            <div class="dashboard-grid">
+                <!-- Columna Izquierda (Flujo de Atención Médica + Tabla de Pacientes) -->
+                <div class="grid-col">
+                    <!-- Card 1: Próxima Cita Médica con Flujo: Médico Tratante ➔ Paciente -->
+                    <div class="card matchup-card">
+                        <div class="card-header">
+                            <span class="card-title">Atención Médica en Curso</span>
+                            <h:link outcome="consulta" styleClass="card-link">Ver Consultas</h:link>
+                        </div>
+
+                        <div class="matchup-time-badge">
+                            <span>
+                                #{consultaBean.proximaConsulta != null ? consultaBean.proximaConsulta.diagnostico : 'Consulta de Cardiología'}
+                            </span>
+                            <span>•</span>
+                            <span>
+                                #{consultaBean.proximaConsulta != null ? consultaBean.proximaConsulta.hora : '10:30 AM'}
+                            </span>
+                        </div>
+
+                        <div class="matchup-content">
+                            <!-- Médico Tratante -->
+                            <div class="participant">
+                                <div class="participant-avatar" style="background: #EBF2FF; color: var(--primary);">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3zm9 11v-1a7 7 0 0 0-7-7h-4a7 7 0 0 0-7 7v1h2v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="participant-name">
+                                        #{consultaBean.proximaConsulta != null and consultaBean.proximaConsulta.nombreDoctor != null ? consultaBean.proximaConsulta.nombreDoctor : 'Dr. Carlos Pérez'}
+                                    </div>
+                                    <div class="participant-sub">
+                                        #{consultaBean.proximaConsulta != null and consultaBean.proximaConsulta.especialidadDoctor != null ? consultaBean.proximaConsulta.especialidadDoctor : 'Médico Tratante'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Flecha de Flujo de Atención: Médico ➔ Paciente -->
+                            <div class="flow-arrow-badge" title="Médico atendiendo a Paciente">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+                            </div>
+
+                            <!-- Paciente Atendido -->
+                            <div class="participant" style="text-align: right; flex-direction: row-reverse;">
+                                <div class="participant-avatar" style="background: #DCFCE7; color: #16A34A;">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                </div>
+                                <div>
+                                    <div class="participant-name">
+                                        #{consultaBean.proximaConsulta != null and consultaBean.proximaConsulta.nombrePaciente != null ? consultaBean.proximaConsulta.nombrePaciente : 'Juan Pérez'}
+                                    </div>
+                                    <div class="participant-sub">
+                                        DNI: #{consultaBean.proximaConsulta != null and consultaBean.proximaConsulta.dniPaciente != null ? consultaBean.proximaConsulta.dniPaciente : '12345678'} • Paciente
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Lista de Pacientes (Standings Table) -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Pacientes Registrados</span>
+                            <div style="display: flex; gap: 12px; align-items: center;">
+                                <h:link outcome="paciente" styleClass="card-link">+ Gestionar Pacientes</h:link>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <h:form id="formTablaDashboard">
+                                <h:dataTable value="#{pacienteBean.listaPacientes}" var="p" styleClass="custom-table">
+                                    <h:column>
+                                        <f:facet name="header">#</f:facet>
+                                        #{p.idPaciente}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Paciente</f:facet>
+                                        <strong>#{p.nombre}</strong>
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Edad</f:facet>
+                                        #{p.edad} años
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">DNI</f:facet>
+                                        #{p.dni}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Sexo</f:facet>
+                                        #{p.sexo}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Teléfono</f:facet>
+                                        #{p.telefono}
+                                    </h:column>
+                                    <h:column>
+                                        <f:facet name="header">Historia Clínica</f:facet>
+                                        <h:link outcome="historial" styleClass="badge-status badge-info" style="text-decoration: none;">
+                                            Ver Historial
+                                        </h:link>
+                                    </h:column>
+                                </h:dataTable>
+                            </h:form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha (Estadísticas + 4 Métricas + Banner) -->
+                <div class="grid-col">
+                    <!-- Card 1: Estadísticas de Atención -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="card-title">Estadística de Triaje y Atención</span>
+                            <span class="badge-status badge-success">En Línea</span>
+                        </div>
+
+                        <div class="stat-bar-container">
+                            <div class="bar-segment bar-blue" title="Atendidos (62%)"></div>
+                            <div class="bar-segment bar-cyan" title="En Espera (23%)"></div>
+                            <div class="bar-segment bar-pink" title="Análisis Clínicos (15%)"></div>
+                        </div>
+
+                        <div class="stat-legend">
+                            <div class="legend-item">
+                                <div class="val">#{pacienteBean.totalPacientes}</div>
+                                <div class="lbl">Pacientes</div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="val">#{pacienteBean.totalDoctores}</div>
+                                <div class="lbl">Doctores</div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="val">#{consultaBean.totalConsultas}</div>
+                                <div class="lbl">Consultas</div>
+                            </div>
+                            <div class="legend-item">
+                                <div class="val">100%</div>
+                                <div class="lbl">MySQL Activo</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4 Metric Cards Limpias -->
+                    <div class="metrics-quad">
+                        <div class="metric-mini-card">
+                            <div class="mini-icon icon-purple">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            </div>
+                            <div class="mini-info">
+                                <div class="mini-lbl">Pacientes Registrados</div>
+                                <div class="mini-val">#{pacienteBean.totalPacientes}</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-mini-card">
+                            <div class="mini-icon icon-pink">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                            </div>
+                            <div class="mini-info">
+                                <div class="mini-lbl">Calidad Asistencial</div>
+                                <div class="mini-val">9.8</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-mini-card">
+                            <div class="mini-icon icon-blue">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                            </div>
+                            <div class="mini-info">
+                                <div class="mini-lbl">Staff Médico</div>
+                                <div class="mini-val">#{pacienteBean.totalDoctores}</div>
+                            </div>
+                        </div>
+
+                        <div class="metric-mini-card">
+                            <div class="mini-icon icon-teal">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 3h12v2H6zm0 16h12v2H6zm10.5-5H14v2.5h-4V14H7.5v-4H10V7.5h4V10h2.5z"/></svg>
+                            </div>
+                            <div class="mini-info">
+                                <div class="mini-lbl">Efectividad Clínica</div>
+                                <div class="mini-val">98.4%</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Action Banner Conectado a Calendario y Consultas -->
+                    <div class="action-banner">
+                        <div class="banner-content">
+                            <span class="banner-badge">Agenda Médica</span>
+                            <div class="banner-title">Programar y Atender Consultas</div>
+                            <div class="banner-sub">Gestión unificada de pacientes, diagnósticos y calendario clínico.</div>
+                        </div>
+                        <h:link outcome="calendario" styleClass="banner-btn">Ver Calendario</h:link>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</h:body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HospitalJSF - Gestión de Doctores</title>
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+</h:head>
+<h:body>
+    <div class="app-container">
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19 10.5V6c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v4.5C5 13 6.9 15.2 9.4 15.5c.6 1.8 2.2 3.2 4.1 3.4v2.1c0 .55.45 1 1 1s1-.45 1-1v-2.1c1.9-.3 3.5-1.6 4.1-3.4 2.5-.3 4.4-2.5 4.4-5zm-5 6.5c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
+                    </div>
+                    <div class="brand-name">Hospital<span>JSF</span></div>
+                </div>
+
+                <ul class="menu-list">
+                    <li>
+                        <h:link outcome="index" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0-18v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>
+                            Dashboard
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="paciente" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            Pacientes
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="triaje" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                            Triaje Clínico
+                        </h:link>
+                    </li>
+                    <!-- Módulo visible ÚNICAMENTE para Administradores -->
+                    <h:panelGroup rendered="#{loginBean.admin}">
+                        <li>
+                            <h:link outcome="doctor" styleClass="nav-link active">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                                Doctores
+                            </h:link>
+                        </li>
+                    </h:panelGroup>
+                    <li>
+                        <h:link outcome="consulta" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                            Consultas
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="historial" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            Historial Médico
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="calendario" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+                            Calendario de Citas
+                        </h:link>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-bottom">
+                <h:form>
+                    <h:commandLink action="#{loginBean.cerrarSesion}" styleClass="nav-link">
+                        <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                        Cerrar Sesión
+                    </h:commandLink>
+                </h:form>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-wrapper">
+            <!-- BANNER DEL SISTEMA -->
+            <div class="inst-banner">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span class="inst-badge">MINISTERIO DE SALUD</span>
+                        <span class="inst-badge-white">CUADRO MÉDICO Y ESPECIALIDADES</span>
+                    </div>
+                    <div class="inst-banner-title">
+                        Gestión del Cuerpo Médico Hospitalario
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500;">
+                        Directorio de Profesionales de la Salud • Especialidades y Turnos Clínicos
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">RED ASISTENCIAL CENTRAL</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #1366FF; margin-top: 2px;">CÓDIGO IPRESS: 0001428</div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Formulario Card de Doctores -->
+                <div class="form-card" style="border: 1px solid #BFDBFE;">
+                    <div class="card-header" style="margin-bottom: 24px; border-bottom: 2px solid #EBF3FC; padding-bottom: 12px;">
+                        <span class="card-title">
+                            #{doctorBean.doctor.idDoctor > 0 ? 'Editar Doctor #' : 'Nuevo Registro de Médico'}
+                            #{doctorBean.doctor.idDoctor > 0 ? doctorBean.doctor.idDoctor : ''}
+                        </span>
+                        <span class="badge-status badge-success">✓ Acreditación Profesional Activa</span>
+                    </div>
+
+                    <h:form id="formDoctor">
+                        <div class="inst-section-header">
+                            <span>1. Datos Profesionales y Especialidad Clínica</span>
+                            <span class="inst-tag">CUADRO ASISTENCIAL</span>
+                        </div>
+
+                        <div class="form-grid-layout">
+                            <div class="form-group">
+                                <h:outputLabel value="Nombre Completo del Doctor:" for="txtDocNombre" />
+                                <h:inputText id="txtDocNombre" value="#{doctorBean.doctor.nombre}"
+                                             required="true" requiredMessage="El nombre del doctor es obligatorio"
+                                             styleClass="form-input">
+                                    <f:validateLength minimum="3" maximum="100"/>
+                                </h:inputText>
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Especialidad Médica:" for="txtDocEspecialidad" />
+                                <h:inputText id="txtDocEspecialidad" value="#{doctorBean.doctor.especialidad}"
+                                             required="true" requiredMessage="La especialidad es obligatoria"
+                                             styleClass="form-input" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Teléfono Institucional / Móvil:" for="txtDocTelefono" />
+                                <h:inputText id="txtDocTelefono" value="#{doctorBean.doctor.telefono}"
+                                             styleClass="form-input" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Correo Electrónico Institucional:" for="txtDocEmail" />
+                                <h:inputText id="txtDocEmail" value="#{doctorBean.doctor.email}"
+                                             styleClass="form-input" />
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px; display: flex; align-items: center; gap: 16px;">
+                            <h:commandButton value="#{doctorBean.doctor.idDoctor > 0 ? 'Actualizar Doctor' : 'Guardar Doctor'}"
+                                             action="#{doctorBean.guardar}"
+                                             styleClass="btn-primary-action"
+                                             style="background: #1366FF;"/>
+                            <h:commandButton value="Limpiar / Nuevo"
+                                             action="#{doctorBean.nuevo}"
+                                             style="background: #F1F5F9; color: #475569; border: none; padding: 12px 24px; border-radius: 30px; font-weight: 700; cursor: pointer;"/>
+                            <h:commandButton value="Descargar Reporte PDF"
+                                             action="#{doctorBean.exportarPDF}"
+                                             immediate="true"
+                                             style="background: #DC2626; color: white; border: none; padding: 12px 24px; border-radius: 30px; font-weight: 700; cursor: pointer; margin-left: auto;"/>
+                        </div>
+
+                        <h:messages styleClass="messages-box" showDetail="true" showSummary="true" />
+                    </h:form>
+                </div>
+
+                <!-- Tabla de Doctores (CRUD Read / Edit / Delete) -->
+                <div class="card" style="border-top: 4px solid #1366FF;">
+                    <div class="card-header">
+                        <div>
+                            <span class="card-title">Directorio Médico del Hospital</span>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                Nómina oficial de médicos tratantes y especialistas
+                            </div>
+                        </div>
+                        <span style="font-size: 12px; color: #003366; font-weight: 800; background: #EBF3FC; padding: 4px 12px; border-radius: 20px;">
+                            Total Doctores: #{doctorBean.totalDoctores}
+                        </span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <h:form id="formTablaDoctores">
+                            <h:dataTable value="#{doctorBean.listaDoctores}" var="d" styleClass="custom-table">
+                                <h:column>
+                                    <f:facet name="header">ID</f:facet>
+                                    #{d.idDoctor}
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Doctor</f:facet>
+                                    <strong>#{d.nombre}</strong>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Especialidad</f:facet>
+                                    <span class="badge-status badge-info">#{d.especialidad}</span>
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Teléfono</f:facet>
+                                    #{d.telefono != null ? d.telefono : '—'}
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Email</f:facet>
+                                    #{d.email != null ? d.email : '—'}
+                                </h:column>
+                                <h:column>
+                                    <f:facet name="header">Acciones</f:facet>
+                                    <div style="display: flex; gap: 8px;">
+                                        <h:commandButton value="Editar"
+                                                         action="#{doctorBean.editar(d)}"
+                                                         style="background: #E0F2FE; color: #0284C7; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;" />
+                                        <h:commandButton value="Eliminar"
+                                                         action="#{doctorBean.eliminar(d.idDoctor)}"
+                                                         onclick="return confirm('¿Seguro que desea eliminar a este doctor?');"
+                                                         style="background: #FEE2E2; color: #DC2626; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;" />
+                                    </div>
+                                </h:column>
+                            </h:dataTable>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</h:body>
+</html>

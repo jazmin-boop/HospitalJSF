@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HospitalJSF - Módulo de Triaje Clínico</title>
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+    <style>
+        /* ================= ESTILOS TEMA LOGIN (INDIGO Y VIOLETA PASTEL) PARA TRIAJE ================= */
+        .triaje-login-banner {
+            background: #FFFFFF;
+            color: #1E1B4B;
+            border-radius: 20px;
+            padding: 22px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.08);
+            margin-bottom: 24px;
+            border: 1.5px solid #E0E7FF;
+            border-left: 6px solid #6366F1;
+        }
+        .triaje-login-banner-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #0F172A;
+        }
+        .triaje-login-badge {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+        }
+        .triaje-login-badge-sub {
+            background: #EDE9FE;
+            color: #4338CA;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: 1px solid #DDD6FE;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .triaje-form-card {
+            background: #FFFFFF;
+            border-radius: 24px;
+            padding: 28px;
+            border: 1.5px solid #E0E7FF;
+            box-shadow: 0 20px 45px rgba(79, 70, 229, 0.08);
+        }
+        .triaje-section-header {
+            font-size: 12.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: #4338CA;
+            background: #EEF2FF;
+            padding: 10px 18px;
+            border-radius: 10px;
+            border-left: 4px solid #6366F1;
+            margin: 20px 0 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .triaje-tag {
+            font-size: 11px;
+            font-weight: 800;
+            color: #4F46E5;
+            background: #E0E7FF;
+            padding: 3px 10px;
+            border-radius: 6px;
+        }
+        .btn-triaje-primary {
+            background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+            transition: all 0.25s ease;
+        }
+        .btn-triaje-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 26px rgba(79, 70, 229, 0.35);
+            background: linear-gradient(135deg, #4F46E5 0%, #4338CA 100%);
+        }
+
+        /* Prioridades Manchester */
+        .prio-rojo {
+            background: #FEE2E2 !important;
+            color: #DC2626 !important;
+            border: 1px solid #FCA5A5 !important;
+            font-weight: 800;
+        }
+        .prio-naranja {
+            background: #FFEDD5 !important;
+            color: #EA580C !important;
+            border: 1px solid #FDBA74 !important;
+            font-weight: 800;
+        }
+        .prio-verde {
+            background: #DCFCE7 !important;
+            color: #16A34A !important;
+            border: 1px solid #86EFAC !important;
+            font-weight: 800;
+        }
+        .prio-azul {
+            background: #E0F2FE !important;
+            color: #0284C7 !important;
+            border: 1px solid #7DD3FC !important;
+            font-weight: 800;
+        }
+    </style>
+</h:head>
+<h:body>
+    <div class="app-container">
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19 10.5V6c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v4.5C5 13 6.9 15.2 9.4 15.5c.6 1.8 2.2 3.2 4.1 3.4v2.1c0 .55.45 1 1 1s1-.45 1-1v-2.1c1.9-.3 3.5-1.6 4.1-3.4 2.5-.3 4.4-2.5 4.4-5zm-5 6.5c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
+                    </div>
+                    <div class="brand-name">Hospital<span>JSF</span></div>
+                </div>
+
+                <ul class="menu-list">
+                    <li>
+                        <h:link outcome="index" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0-18v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>
+                            Dashboard
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="paciente" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            Pacientes
+                        </h:link>
+                    </li>
+                    <!-- Módulo TRIAJE Clínico Destacado -->
+                    <li>
+                        <h:link outcome="triaje" styleClass="nav-link active">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                            Triaje Clínico
+                        </h:link>
+                    </li>
+                    <h:panelGroup rendered="#{loginBean.admin}">
+                        <li>
+                            <h:link outcome="doctor" styleClass="nav-link">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                                Doctores
+                            </h:link>
+                        </li>
+                    </h:panelGroup>
+                    <li>
+                        <h:link outcome="consulta" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                            Consultas
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="historial" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            Historial Médico
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="calendario" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+                            Calendario de Citas
+                        </h:link>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-bottom">
+                <h:form>
+                    <h:commandLink action="#{loginBean.cerrarSesion}" styleClass="nav-link">
+                        <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                        Cerrar Sesión
+                    </h:commandLink>
+                </h:form>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-wrapper">
+            <!-- BANNER CON LOS COLORES DEL LOGIN (INDIGO Y VIOLETA PASTEL) -->
+            <div class="triaje-login-banner">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span class="triaje-login-badge">ATENCIÓN CLÍNICA</span>
+                        <span class="triaje-login-badge-sub">MÓDULO DE TRIAJE</span>
+                    </div>
+                    <div class="triaje-login-banner-title">
+                        Evaluación y Clasificación de Urgencia en Triaje
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500;">
+                        Control de Signos Vitales • Clasificación Manchester y Derivación Médica
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">UNIDAD DE TRIAJE Y EMERGENCIAS</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #4F46E5; margin-top: 2px;">SEDE HOSPITALARIA</div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Formulario Card de Triaje con Colores del Login -->
+                <div class="triaje-form-card">
+                    <div class="card-header" style="margin-bottom: 20px; border-bottom: 2px solid #EEF2FF; padding-bottom: 12px;">
+                        <div>
+                            <span class="card-title" style="color: #1E1B4B;">
+                                #{triajeBean.triaje.idTriaje > 0 ? 'Editar Ficha de Control de Triaje #' : 'Nueva Ficha de Triaje Clínico'}
+                                #{triajeBean.triaje.idTriaje > 0 ? triajeBean.triaje.idTriaje : ''}
+                            </span>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                Registro y Control de Signos Vitales y Derivación Asistencial
+                            </div>
+                        </div>
+                        <span class="badge-status" style="background: #EEF2FF; color: #4338CA; border: 1px solid #C7D2FE; font-weight: 700;">✓ Acreditación Activa</span>
+                    </div>
+
+                    <h:form id="formTriaje">
+                        <!-- Sección 1: Datos del Paciente -->
+                        <div class="triaje-section-header">
+                            <span>1. Filiación y Datos de Admisión del Paciente</span>
+                            <span class="triaje-tag">VERIFICADO</span>
+                        </div>
+
+                        <div class="form-grid-layout">
+                            <div class="form-group">
+                                <h:outputLabel value="Paciente / Afiliado:" for="cmbPaciente" />
+                                <h:selectOneMenu id="cmbPaciente" value="#{triajeBean.triaje.idPaciente}"
+                                                 required="true" requiredMessage="Seleccione el paciente"
+                                                 styleClass="form-select">
+                                    <f:selectItem itemLabel="-- Seleccionar Paciente --" itemValue="" />
+                                    <f:selectItems value="#{triajeBean.listaPacientes}" var="p"
+                                                   itemLabel="#{p.nombre} (DNI: #{p.dni}) - #{p.edad} años"
+                                                   itemValue="#{p.idPaciente}" />
+                                    <f:ajax event="change" listener="#{triajeBean.onPacienteSeleccionado}"
+                                            render="txtFua txtTalla txtPeso txtPresion txtTemp txtImc txtNutri" />
+                                </h:selectOneMenu>
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Régimen de Financiamiento / Seguro:" for="cmbSeguro" />
+                                <h:selectOneMenu id="cmbSeguro" value="#{triajeBean.triaje.tipoSeguro}" styleClass="form-select">
+                                    <f:selectItem itemLabel="Seguro Integral" itemValue="Seguro Integral" />
+                                    <f:selectItem itemLabel="Seguro Regular" itemValue="Seguro Regular" />
+                                    <f:selectItem itemLabel="Seguro Particular" itemValue="Seguro Particular" />
+                                    <f:selectItem itemLabel="Plan Preferencial" itemValue="Plan Preferencial" />
+                                </h:selectOneMenu>
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Código de Expediente / Ticket:" for="txtFua" />
+                                <h:inputText id="txtFua" value="#{triajeBean.triaje.codigoAsegurado}"
+                                             styleClass="form-input" style="font-weight: 700; color: #4338CA;" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Hora de Ingreso al Triaje:" for="txtHora" />
+                                <h:inputText id="txtHora" value="#{triajeBean.triaje.hora}" styleClass="form-input" />
+                            </div>
+                        </div>
+
+                        <!-- Sección 2: Clasificación de Urgencia (Manchester) -->
+                        <div class="triaje-section-header">
+                            <span>2. Clasificación de Prioridad de Triaje (Escala Manchester)</span>
+                            <span class="triaje-tag">CRITERIO CLÍNICO</span>
+                        </div>
+
+                        <div class="form-grid-layout">
+                            <div class="form-group full-width">
+                                <h:outputLabel value="Prioridad de Atención Asignada:" for="cmbPrioridad" />
+                                <h:selectOneMenu id="cmbPrioridad" value="#{triajeBean.triaje.prioridad}" styleClass="form-select" style="font-size: 14px; font-weight: 800;">
+                                    <f:selectItem itemLabel="🔴 Prioridad I: Emergencia con Riesgo Vital Inmediato (Atención Inmediata)" itemValue="Prioridad I (Emergencia Roja)" />
+                                    <f:selectItem itemLabel="🟠 Prioridad II: Urgencia Mayor con Potencial Riesgo Vital (Espera &lt; 15 min)" itemValue="Prioridad II (Urgencia Mayor)" />
+                                    <f:selectItem itemLabel="🟢 Prioridad III: Urgencia Menor / Condición Aguda Estable (Espera &lt; 30 min)" itemValue="Prioridad III (Urgencia Menor)" />
+                                    <f:selectItem itemLabel="🔵 Prioridad IV: No Urgente / Consulta Médica Ambulatoria (Espera &lt; 60 min)" itemValue="Prioridad IV (No Urgente)" />
+                                </h:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <!-- Sección 3: Signos Vitales y Antropometría -->
+                        <div class="triaje-section-header">
+                            <span>3. Signos Vitales, Oximetría y Antropometría Nutricional</span>
+                            <span class="triaje-tag">MONITORIZACIÓN</span>
+                        </div>
+
+                        <div class="form-grid-layout">
+                            <div class="form-group">
+                                <h:outputLabel value="Presión Arterial (PA):" for="txtPresion" />
+                                <h:inputText id="txtPresion" value="#{triajeBean.triaje.presion}"
+                                             styleClass="form-input" placeholder="120/80 mmHg" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Frecuencia Cardíaca (FC):" for="txtFc" />
+                                <h:inputText id="txtFc" value="#{triajeBean.triaje.frecuenciaCardiaca}"
+                                             styleClass="form-input" placeholder="72 lpm" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Frecuencia Respiratoria (FR):" for="txtFr" />
+                                <h:inputText id="txtFr" value="#{triajeBean.triaje.frecuenciaRespiratoria}"
+                                             styleClass="form-input" placeholder="18 rpm" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Temperatura (°C):" for="txtTemp" />
+                                <h:inputText id="txtTemp" value="#{triajeBean.triaje.temperatura}"
+                                             styleClass="form-input" placeholder="36.5 °C" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Saturación de Oxígeno (SpO2):" for="txtSpo2" />
+                                <h:inputText id="txtSpo2" value="#{triajeBean.triaje.saturacionOxigeno}"
+                                             styleClass="form-input" placeholder="98 %" />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Talla (m):" for="txtTalla" />
+                                <h:inputText id="txtTalla" value="#{triajeBean.triaje.talla}"
+                                             styleClass="form-input" placeholder="1.70 m">
+                                    <f:ajax event="blur" listener="#{triajeBean.calcularIMC}" render="txtImc txtNutri" />
+                                </h:inputText>
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Peso (kg):" for="txtPeso" />
+                                <h:inputText id="txtPeso" value="#{triajeBean.triaje.peso}"
+                                             styleClass="form-input" placeholder="68.5 kg">
+                                    <f:ajax event="blur" listener="#{triajeBean.calcularIMC}" render="txtImc txtNutri" />
+                                </h:inputText>
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Índice de Masa Corporal (IMC):" for="txtImc" />
+                                <div style="display: flex; gap: 8px;">
+                                    <h:inputText id="txtImc" value="#{triajeBean.triaje.imc}" readonly="true"
+                                                 styleClass="form-input" style="width: 45%; background: #F8FAFC; font-weight: 800; color: #4338CA;" />
+                                    <h:inputText id="txtNutri" value="#{triajeBean.triaje.estadoNutricional}" readonly="true"
+                                                 styleClass="form-input" style="width: 55%; background: #F8FAFC; font-weight: 700; color: #6366F1;" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección 4: Motivo de Ingreso y Derivación -->
+                        <div class="triaje-section-header">
+                            <span>4. Motivo de Consulta y Consultorio de Destino</span>
+                            <span class="triaje-tag">DESTINO ASISTENCIAL</span>
+                        </div>
+
+                        <div class="form-grid-layout">
+                            <div class="form-group">
+                                <h:outputLabel value="Motivo Principal de Consulta / Síntomas:" for="txtMotivo" />
+                                <h:inputText id="txtMotivo" value="#{triajeBean.triaje.motivoConsulta}"
+                                             styleClass="form-input" placeholder="Ej: Cefalea intensa, alza térmica, dolor precordial..." />
+                            </div>
+
+                            <div class="form-group">
+                                <h:outputLabel value="Consultorio de Destino / Especialidad:" for="cmbDestino" />
+                                <h:selectOneMenu id="cmbDestino" value="#{triajeBean.triaje.destinoConsultorio}" styleClass="form-select">
+                                    <f:selectItem itemLabel="Consultorio 1 - Cardiología" itemValue="Consultorio 1 - Cardiología" />
+                                    <f:selectItem itemLabel="Consultorio 2 - Pediatría" itemValue="Consultorio 2 - Pediatría" />
+                                    <f:selectItem itemLabel="Consultorio 3 - Traumatología" itemValue="Consultorio 3 - Traumatología" />
+                                    <f:selectItem itemLabel="Consultorio 4 - Ginecología y Obstetricia" itemValue="Consultorio 4 - Ginecología" />
+                                    <f:selectItem itemLabel="Consultorio 5 - Neurología" itemValue="Consultorio 5 - Neurología" />
+                                    <f:selectItem itemLabel="Consultorio 6 - Dermatología" itemValue="Consultorio 6 - Dermatología" />
+                                    <f:selectItem itemLabel="Consultorio 7 - Oftalmología" itemValue="Consultorio 7 - Oftalmología" />
+                                    <f:selectItem itemLabel="Consultorio 8 - Medicina General" itemValue="Consultorio 8 - Medicina General" />
+                                    <f:selectItem itemLabel="Consultorio 9 - Gastroenterología" itemValue="Consultorio 9 - Gastroenterología" />
+                                    <f:selectItem itemLabel="Consultorio 10 - Endocrinología" itemValue="Consultorio 10 - Endocrinología" />
+                                    <f:selectItem itemLabel="Tópico de Emergencia / Shock Trauma" itemValue="Tópico de Emergencia" />
+                                </h:selectOneMenu>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 24px; display: flex; align-items: center; gap: 16px;">
+                            <h:commandButton value="#{triajeBean.triaje.idTriaje > 0 ? 'Actualizar Ficha de Triaje' : 'Registrar Ficha de Triaje'}"
+                                             action="#{triajeBean.guardar}"
+                                             styleClass="btn-triaje-primary"/>
+                            <h:commandButton value="Limpiar / Nuevo Registro"
+                                             action="#{triajeBean.nuevo}"
+                                             style="background: #F8FAFC; color: #475569; border: 1.5px solid #E2E8F0; padding: 12px 24px; border-radius: 30px; font-weight: 700; cursor: pointer; transition: all 0.2s;"/>
+                            <h:commandButton value="Descargar Reporte PDF"
+                                             action="#{triajeBean.exportarPDF}"
+                                             immediate="true"
+                                             style="background: #DC2626; color: white; border: none; padding: 12px 24px; border-radius: 30px; font-weight: 700; cursor: pointer; margin-left: auto;"/>
+                        </div>
+
+                        <h:messages styleClass="messages-box" showDetail="true" showSummary="true" />
+                    </h:form>
+                </div>
+
+                <!-- Bandeja de Entrada de Pacientes Triados -->
+                <div class="card" style="border-top: 4px solid #6366F1; border-radius: 20px; box-shadow: 0 15px 35px rgba(79, 70, 229, 0.06);">
+                    <div class="card-header">
+                        <div>
+                            <span class="card-title" style="color: #1E1B4B;">Bandeja de Pacientes en Triaje Clínico</span>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                Monitoreo de flujo de pacientes y nivel de urgencia Manchester
+                            </div>
+                        </div>
+                        <span style="font-size: 12px; color: #4338CA; font-weight: 800; background: #EEF2FF; padding: 5px 14px; border-radius: 20px; border: 1px solid #C7D2FE;">
+                            Total Triados: #{triajeBean.totalTriajes}
+                        </span>
+                    </div>
+
+                    <div class="table-responsive">
+                        <h:form id="formTablaTriajes">
+                            <h:dataTable value="#{triajeBean.listaTriajes}" var="t" styleClass="custom-table">
+                                <h:column>
+                                    <f:facet name="header">Ticket / N° Ficha</f:facet>
+                                    <strong style="color: #4338CA;">TRJ-00#{t.idTriaje}</strong>
+                                    <div style="font-size: 11px; color: var(--text-muted);">
+                                        <h:outputText value="#{t.fecha}"><f:convertDateTime pattern="dd/MM/yyyy"/></h:outputText> #{t.hora}
+                                    </div>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">Paciente</f:facet>
+                                    <strong>#{t.nombrePaciente != null ? t.nombrePaciente : 'Paciente #'.concat(t.idPaciente)}</strong>
+                                    <div style="font-size: 11px; color: var(--text-muted);">DNI: #{t.dniPaciente} • #{t.edadPaciente} años</div>
+                                    <div style="font-size: 10.5px; color: #6366F1; font-weight: 700;">#{t.tipoSeguro}</div>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">Prioridad Triaje</f:facet>
+                                    <span class="badge-status #{t.prioridad.contains('I ') or t.prioridad.contains('Roja') ? 'prio-rojo' : (t.prioridad.contains('II') ? 'prio-naranja' : (t.prioridad.contains('III') ? 'prio-verde' : 'prio-azul'))}">
+                                        #{t.prioridad}
+                                    </span>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">Signos Vitales</f:facet>
+                                    <div style="font-weight: 700; color: #0F172A;">PA: #{t.presion} | T°: #{t.temperatura}</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">FC: #{t.frecuenciaCardiaca} | SpO2: #{t.saturacionOxigeno}</div>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">Antropometría</f:facet>
+                                    <div>Talla: #{t.talla} | Peso: #{t.peso}</div>
+                                    <div style="font-size: 11px; color: #4338CA; font-weight: 700;">IMC: #{t.imc} (#{t.estadoNutricional})</div>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">Consultorio Destino</f:facet>
+                                    <strong style="color: #0F172A;">#{t.destinoConsultorio}</strong>
+                                    <div style="font-size: 11px; color: var(--text-muted); max-width: 180px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        #{t.motivoConsulta}
+                                    </div>
+                                </h:column>
+
+                                <h:column>
+                                    <f:facet name="header">Acciones</f:facet>
+                                    <div style="display: flex; gap: 8px;">
+                                        <h:commandButton value="Editar"
+                                                         action="#{triajeBean.editar(t)}"
+                                                         style="background: #EEF2FF; color: #4F46E5; border: 1px solid #C7D2FE; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;" />
+                                        <h:commandButton value="Eliminar"
+                                                         action="#{triajeBean.eliminar(t.idTriaje)}"
+                                                         onclick="return confirm('¿Desea anular esta ficha de triaje?');"
+                                                         style="background: #FEE2E2; color: #DC2626; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 12px;" />
+                                    </div>
+                                </h:column>
+                            </h:dataTable>
+                        </h:form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</h:body>
+</html>

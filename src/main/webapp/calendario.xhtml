@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HospitalJSF - Agenda y Calendario de Consultas</title>
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/style.css" />
+    <style>
+        /* ================= ESTILO GOOGLE CALENDAR ================= */
+        .fc {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+        }
+        .fc .fc-toolbar.fc-header-toolbar {
+            margin-bottom: 20px;
+            padding: 4px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .fc .fc-toolbar-title {
+            font-size: 1.35rem !important;
+            font-weight: 800 !important;
+            color: #1E293B !important;
+            letter-spacing: -0.02em !important;
+            text-transform: capitalize !important;
+        }
+        .fc .fc-button-primary {
+            background-color: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            color: #334155 !important;
+            font-weight: 700 !important;
+            font-size: 13px !important;
+            border-radius: 8px !important;
+            padding: 8px 16px !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05) !important;
+            transition: all 0.2s ease !important;
+            text-transform: capitalize !important;
+        }
+        .fc .fc-button-primary:hover {
+            background-color: #F8FAFC !important;
+            border-color: #CBD5E1 !important;
+            color: #0F172A !important;
+        }
+        .fc .fc-button-primary:not(:disabled).fc-button-active,
+        .fc .fc-button-primary:not(:disabled):active {
+            background-color: #EFF6FF !important;
+            border-color: #3B82F6 !important;
+            color: #1D4ED8 !important;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15) !important;
+        }
+        .fc .fc-today-button {
+            margin-right: 8px !important;
+            font-weight: 800 !important;
+        }
+        .fc .fc-col-header-cell {
+            background-color: #F8FAFC !important;
+            padding: 10px 0 !important;
+            border-color: #E2E8F0 !important;
+        }
+        .fc .fc-col-header-cell-cushion {
+            font-size: 11px !important;
+            font-weight: 800 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.05em !important;
+            color: #64748B !important;
+            text-decoration: none !important;
+        }
+        .fc-theme-standard td, .fc-theme-standard th {
+            border-color: #F1F5F9 !important;
+        }
+        .fc .fc-day-today {
+            background-color: rgba(239, 246, 255, 0.45) !important;
+        }
+        .fc .fc-day-today .fc-daygrid-day-number {
+            background-color: #1366FF !important;
+            color: #FFFFFF !important;
+            border-radius: 50% !important;
+            width: 26px !important;
+            height: 26px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            margin: 4px !important;
+            font-weight: 800 !important;
+        }
+        .fc-daygrid-day-number {
+            font-size: 12px !important;
+            font-weight: 700 !important;
+            color: #475569 !important;
+            padding: 6px 8px !important;
+            text-decoration: none !important;
+        }
+        
+        /* Eventos Tipo Píldora Google Calendar */
+        .fc-event {
+            border-radius: 6px !important;
+            padding: 4px 8px !important;
+            font-size: 11.5px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            margin: 2px 4px !important;
+            border: 1px solid transparent !important;
+            border-left-width: 4px !important;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04) !important;
+            transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+        }
+        .fc-event:hover {
+            transform: translateY(-1px) !important;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12) !important;
+        }
+
+        /* Paleta Google Calendar */
+        .cal-event-blue {
+            background-color: #EBF5FF !important;
+            border-color: #2563EB !important;
+            color: #1E40AF !important;
+        }
+        .cal-event-emerald {
+            background-color: #ECFDF5 !important;
+            border-color: #059669 !important;
+            color: #065F46 !important;
+        }
+        .cal-event-amber {
+            background-color: #FFFBEB !important;
+            border-color: #D97706 !important;
+            color: #92400E !important;
+        }
+        .cal-event-rose {
+            background-color: #FFF1F2 !important;
+            border-color: #E11D48 !important;
+            color: #9F1239 !important;
+        }
+        .cal-event-purple {
+            background-color: #FAF5FF !important;
+            border-color: #9333EA !important;
+            color: #6B21A8 !important;
+        }
+        .cal-event-indigo {
+            background-color: #EEF2FF !important;
+            border-color: #4F46E5 !important;
+            color: #3730A3 !important;
+        }
+
+        .agenda-card {
+            background: #FFFFFF;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border-soft);
+            box-shadow: var(--shadow-card);
+        }
+        .agenda-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: #FAFCFE;
+            border: 1px solid #F1F5F9;
+            border-radius: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+        .agenda-item:hover {
+            background: #F0F6FF;
+            border-color: #BFDBFE;
+            transform: translateY(-1px);
+        }
+        .agenda-date {
+            min-width: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .agenda-date .day {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1E293B;
+        }
+        .agenda-date .hour {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        .agenda-info {
+            flex: 1;
+            padding: 0 20px;
+        }
+        .agenda-info .patient {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0F172A;
+        }
+        .agenda-info .doc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+    </style>
+    <script>
+        if (window.PrimeFaces) {
+            PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                currentText: 'Hoy',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'],
+                dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+                week: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                allDayText: 'Todo el día',
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Agenda'
+            };
+        }
+    </script>
+</h:head>
+<h:body>
+    <div class="app-container">
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19 10.5V6c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v4.5C5 13 6.9 15.2 9.4 15.5c.6 1.8 2.2 3.2 4.1 3.4v2.1c0 .55.45 1 1 1s1-.45 1-1v-2.1c1.9-.3 3.5-1.6 4.1-3.4 2.5-.3 4.4-2.5 4.4-5zm-5 6.5c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z"/></svg>
+                    </div>
+                    <div class="brand-name">Hospital<span>JSF</span></div>
+                </div>
+
+                <ul class="menu-list">
+                    <li>
+                        <h:link outcome="index" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M4 13h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0 8h6c.55 0 1-.45 1-1v-4c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1zm10 0h6c.55 0 1-.45 1-1v-8c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1zm0-18v4c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1h-6c-.55 0-1 .45-1 1z"/></svg>
+                            Dashboard
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="paciente" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            Pacientes
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="triaje" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"/></svg>
+                            Triaje Clínico
+                        </h:link>
+                    </li>
+                    <!-- Visible ÚNICAMENTE para Administradores -->
+                    <h:panelGroup rendered="#{loginBean.admin}">
+                        <li>
+                            <h:link outcome="doctor" styleClass="nav-link">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+                                Doctores
+                            </h:link>
+                        </li>
+                    </h:panelGroup>
+                    <li>
+                        <h:link outcome="consulta" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                            Consultas
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="historial" styleClass="nav-link">
+                            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                            Historial Médico
+                        </h:link>
+                    </li>
+                    <li>
+                        <h:link outcome="calendario" styleClass="nav-link active">
+                            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/></svg>
+                            Calendario de Citas
+                        </h:link>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-bottom">
+                <h:form>
+                    <h:commandLink action="#{loginBean.cerrarSesion}" styleClass="nav-link">
+                        <svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+                        Cerrar Sesión
+                    </h:commandLink>
+                </h:form>
+            </div>
+        </aside>
+
+        <!-- ================= MAIN CONTENT ================= -->
+        <main class="main-wrapper">
+            <!-- BANNER DEL SISTEMA -->
+            <div class="inst-banner">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span class="inst-badge">MINISTERIO DE SALUD</span>
+                        <span class="inst-badge-white">AGENDA ASISTENCIAL Y PROGRAMACIÓN</span>
+                    </div>
+                    <div class="inst-banner-title">
+                        Calendario General de Consultas y Citas Médicas
+                    </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px; font-weight: 500;">
+                        Planificación de Turnos • Vistas Mes, Semana, Día y Agenda de Consultorios
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <div style="font-size: 11px; color: #64748B; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">RED ASISTENCIAL CENTRAL</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #1366FF; margin-top: 2px;">CÓDIGO IPRESS: 0001428</div>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 24px;">
+                <!-- Calendario de PrimeFaces Interactivo -->
+                <div class="card" style="border-top: 4px solid #1366FF;">
+                    <div class="card-header">
+                        <div>
+                            <span class="card-title">Programación de Citas Médicas Ambulatorias</span>
+                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                                Agenda interactiva con vistas dinámica tipo Google Calendar
+                            </div>
+                        </div>
+                        <h:link outcome="consulta" styleClass="card-link" style="background: #003366; color: white; padding: 8px 16px; border-radius: 20px; font-weight: 700;">+ Agendar Nueva Consulta</h:link>
+                    </div>
+
+                    <h:form id="formCalendario">
+                        <p:schedule id="scheduleConsultas" value="#{calendarioBean.eventModel}"
+                                    widgetVar="miCalendario"
+                                    initialDate="#{calendarioBean.initialDate}"
+                                    leftHeaderTemplate="prev,next today"
+                                    centerHeaderTemplate="title"
+                                    rightHeaderTemplate="dayGridMonth,timeGridWeek,timeGridDay,listWeek"
+                                    view="dayGridMonth"
+                                    timeZone="America/Lima" locale="es"
+                                    aspectRatio="1.8"
+                                    slotMinTime="07:00:00" slotMaxTime="20:00:00"
+                                    style="max-width: 100%; border-radius: 12px; overflow: hidden;" />
+                    </h:form>
+                </div>
+
+                <!-- Lista de Citas Programadas y Conectadas -->
+                <div class="agenda-card">
+                    <div class="card-header" style="margin-bottom: 20px;">
+                        <span class="card-title">Próximas Consultas en Agenda</span>
+                        <span style="font-size: 12px; color: var(--text-muted); font-weight: 600;">
+                            Conectado con Base de Datos MySQL
+                        </span>
+                    </div>
+
+                    <div>
+                        <h:panelGroup rendered="#{empty calendarioBean.consultasAgendadas}">
+                            <div style="padding: 20px; text-align: center; color: var(--text-muted);">
+                                No hay consultas agendadas actualmente. Registre una en el módulo de Consultas.
+                            </div>
+                        </h:panelGroup>
+
+                        <ui:repeat xmlns:ui="http://xmlns.jcp.org/jsf/facelets" value="#{calendarioBean.consultasAgendadas}" var="c">
+                            <div class="agenda-item">
+                                <div class="agenda-date">
+                                    <div class="day">
+                                        <h:outputText value="#{c.fecha}">
+                                            <f:convertDateTime pattern="dd MMM yyyy" />
+                                        </h:outputText>
+                                    </div>
+                                    <div class="hour">#{c.hora != null ? c.hora : '10:00 AM'}</div>
+                                </div>
+
+                                <div class="agenda-info">
+                                    <div class="patient">#{c.nombrePaciente != null ? c.nombrePaciente : 'Paciente #'.concat(c.idPaciente)}</div>
+                                    <div class="doc">
+                                        Médico: <strong>#{c.nombreDoctor != null ? c.nombreDoctor : 'Dr. Asignado'}</strong> • 
+                                        Diagnóstico: #{c.diagnostico}
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span class="badge-status #{c.estado == 'Atendida' ? 'badge-success' : 'badge-info'}">
+                                        #{c.estado}
+                                    </span>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</h:body>
+</html>
